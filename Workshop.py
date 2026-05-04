@@ -248,3 +248,74 @@ constraints = {
 # Então, use o operador and para verificar se o gender em minúsculas está em ('male', 'female').
 
         'gender': isinstance(gender, str) and gender.lower() in ('male', 'female')
+
+# Agora adicione uma chave diagnosis ao dicionário constraints.
+# Para seu valor, escreva uma expressão que verifique se diagnosis é uma instância de str ou é None.
+
+        'diagnosis' : isinstance(diagnosis, str) or diagnosis is None
+
+# Em seguida, adicione uma chave medications ao dicionário constraints.
+# Para seu valor use isinstance para verificar se medications é uma lista.
+
+        'medications':  isinstance(medications, list)
+    
+# Passe a lista [isinstance(i, str) for i in medications] para a função all para garantir que cada elemento nela seja uma string.
+
+        'medications': isinstance(medications, list) and all([isinstance(i, str) for i in medications]) 
+
+# Adicione uma última chave last_visit_id ao dicionário constraints. 
+# Para seu valor, use isinstance para verificar se last_visit_id é uma string.        
+
+        'last_visit_id': isinstance(last_visit_id, str)
+
+# É hora de usar outra expressão regular.
+# De forma semelhante ao que você já fez, use o operador and para adicionar uma expressão ao valor atual de constraints['last_visit_id'].
+# No lado direito do operador and, use a função fullmatch do módulo re para garantir que last_visit_id comece com a letra v (minúscula ou maiúscula) seguida por um ou mais dígitos.
+
+        'last_visit_id': isinstance(last_visit_id, str) and re.fullmatch('v\d+', last_visit_id, re.IGNORECASE)
+
+# Agora que seu dicionário constraints está completo, você vai alterar a declaração return de find_invalid_records para que ela retorne uma lista das chaves inválidas.
+# Usando a sintaxe de list comprehension, retorne uma lista que avalie key para cada key, value em constraints.items().
+# Como você quer retornar uma lista contendo apenas chaves inválidas, adicione uma cláusula if à sua compreensão para que cada key seja adicionada à lista somente quando value for falsy.
+
+    return [key for key, value in constraints.items() if not value]   
+
+# A função find_invalid_records está completa. Agora, remova print(find_invalid_records(**medical_records[0])) do seu código.
+# Voltando para a função validate, após as duas declarações if e ainda dentro do loop for, crie uma variável chamada invalid_records.
+# Então, atribua a ela uma chamada para find_invalid_records usando o operador ** para desempacotar dictionary.
+
+        invalid_records = find_invalid_records(**dictionary)    
+
+
+# If you pass invalid data to the validate function, for example a list containing non-dictionary elements or dictionaries with missing and/or invalid keys, Python will raise an AttributeError and a TypeError, respectively. 
+# Feel free to verify it by modifying the medical_records list.
+# To avoid that, after setting is_invalid to True, use the continue keyword to skip to the next iteration in both your if statements.
+
+    for index, dictionary in enumerate(data):
+        if not isinstance(dictionary, dict):
+            print(f'Invalid format: expected a dictionary at position {index}.')
+            is_invalid = True
+            continue
+
+        if set(dictionary.keys()) != key_set:
+            print(
+                f'Invalid format: {dictionary} at position {index} has missing and/or invalid keys.'
+            )
+            is_invalid = True
+            continue
+
+# Right after the invalid_records variable, create a for loop to iterate over it. 
+# For each invalid record, print Unexpected format '<key>: <val>' at position <index>.. 
+# Replace <key>, <val>, and <index> with the current key, value, and index.
+# Remember that invalid_records is a list of keys that refer to invalid records in the current dictionary. 
+# You will need to take the key from invalid_records and look up the value in dictionary.
+# Position or index refers to the current dictionary in medical_records, defined by the outer for loop in the function.
+# Review your code so far if you need to remind yourself of the loops and variables already created.
+# Then, set is_invalid to True.
+# Feel free to test the validate function with invalid data to see the validation messages.
+# With that, the medical validator workshop is complete.
+
+        for key in invalid_records: 
+            val = dictionary[key]               
+            print(f"Unexpected format '{key}: {val}' at position {index}.")
+            is_invalid = True
